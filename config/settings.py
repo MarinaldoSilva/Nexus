@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     #'simpleui',
     
     'core',
+    'vault',
 
     
     'django.contrib.admin',
