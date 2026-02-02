@@ -1,0 +1,50 @@
+[project]
+name = "nexus-system"
+version = "0.1.0"
+description = "NEXUS: Enterprise File & Data Management System"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dj-rest-auth>=5.0.2",
+    "django>=6.0.1",
+    "django-allauth>=65.14.0",
+    "django-simpleui>=2026.1.13",
+    "django-unfold>=0.78.0",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-simplejwt>=5.5.1",
+    "psycopg>=3.3.2",
+    "psycopg2>=2.9.11",
+    "pydantic[email]>=2.12.5",
+    "python-dotenv>=1.2.1",
+    "requests>=2.32.5",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "ruff>=0.14.14",
+]
+
+# --- CONFIGURAÇÃO DE ENGENHARIA DO RUFF ---
+[tool.ruff]
+# Tamanho da linha (PEP8 diz 79, mas em 2026 usamos 88 ou 120 para telas HD)
+line-length = 88 
+target-version = "py312"
+
+[tool.ruff.lint]
+# Habilitando regras estritas:
+# E = Erros pycodestyle
+# F = Pyflakes
+# I = Isort (ordenação de imports)
+# B = Flake8-bugbear (pega bugs comuns)
+# UP = Pyupgrade (atualiza sintaxe antiga automaticamente)
+select = ["E", "F", "I", "B", "UP"]
+
+
+# select = ['I']: O Ruff vai ordenar seus imports automaticamente. Nada de bagunça entre imports nativos e de terceiros.
+# select = ['UP']: Se você escrever código 'velho' (ex: List[str]), o Ruff vai reescrever automaticamente para o novo (list[str]) ao salvar.
+
+
+[tool.ruff.format]
+quote-style = "double" # Aspas duplas por padrão
+indent-style = "space"
