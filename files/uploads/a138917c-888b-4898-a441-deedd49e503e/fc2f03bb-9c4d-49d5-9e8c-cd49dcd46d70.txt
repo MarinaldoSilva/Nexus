@@ -1,0 +1,43 @@
+    path('atualizar/<uuid>:pk>', DueUpdateView.as_view(), name='due-update')
+
+
+class IsAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        
+        return user.type_user == TypeUserChoices.ADMINISTRADOR
+
+
+
+@extend_schema(
+    summary="Edição de Diligencias - Admin",
+    description="Somente usuários Admin podem realizer alterações nas diligencias.",
+    tags=["Due Diligence"],
+    responses={
+        200: OpenApiResponse(
+            response=DueDiligenceSerializer,
+            description='Diligencia atualizada com sucesso'
+            ),
+        400: OpenApiResponse(
+            description="Você não tem permissão de edição"
+        ),
+        404: OpenApiResponse(
+            description="Diligencia não localizada na base."
+        )
+    }
+)
+class DueUpdateView(generics.UpdateAPIView):
+    permission_classes = [IsAdmin]
+    serializer_class = [DueDiligenceSerializer]
+    quaryset = DueDiligence.objects.all()
+    http_method_names = ['patch']
+
+
+
+
+
+path('atualizar/documentos/<uuid:pk>/', AnaliseDocumentoUpdateView.as_view(), name='analise-documento-update'),
+
+

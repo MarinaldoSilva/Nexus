@@ -3,7 +3,8 @@ from vault.views import (
     FileListAPIView, 
     FileCreateAPIView, 
     FileUpdateAPIView, 
-    FileDestroyAPIView
+    FileDestroyAPIView,
+    CompressFileAPIView,
 )
 
 urlpatterns = [
@@ -11,4 +12,6 @@ urlpatterns = [
     path('criar/', FileCreateAPIView.as_view(), name="criar_arquivo"),
     path('atualizar/<uuid:pk>/', FileUpdateAPIView.as_view(), name="atualizar_arquivo"),
     path('deletar/<uuid:pk>/', FileDestroyAPIView.as_view(), name="deletar_arquivo"),
+    path('comprimir/', CompressFileAPIView.as_view(), name="comprimir_arquivo"),
+    
 ]
