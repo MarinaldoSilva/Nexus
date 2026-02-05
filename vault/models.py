@@ -1,20 +1,31 @@
 from django.db import models
 from uuid import uuid4
+import mimetypes
 from core.models import TimeStampeModel
 from django.conf import settings
 
 
-def upload_patch(instance, filename):
-    extensao = filename.split('.')[:-1]
-    woner = instance.full_name(' ')[0]
-    return f"uploads/{instance.woner.id}/{woner}/{uuid4()}.{extensao}"
+def upload_path(instance, filename):
+    extensao = filename.split('.')[-1]
+    file_name = f"{uuid4()}.{extensao}"
+    
+    try:
+        user_id = instance.owner.id
+    except Exception as e:
+        user_id = "user_unknown"
+    return f"uploads/{user_id}/{file_name}"
 
 class File(TimeStampeModel):
-    woner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="files",verbose_name="Dono")
-    file = models.FileField('arquivo', upload_patch=upload_patch)
-    name = models.CharField('Nome do arquivo',max_length=255)
-    file_size = models.PositiveIntegerField("Bytes")
-    types = models.CharField('Type', max_length=50)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="files",
+        verbose_name="Dono"
+    )
+    file = models.FileField('arquivo', upload_to=upload_path)
+    name = models.CharField('Nome do arquivo',max_length=255, null=True, blank=True, editable=False)
+    file_size = models.PositiveIntegerField("Bytes", null=True, blank=True, editable=False)
+    types = models.CharField('Type', max_length=50, null=True, blank=True, editable=False)
     
     class Meta:
         verbose_name = "Arquivo",
@@ -25,7 +36,12 @@ class File(TimeStampeModel):
         return self.name
     
     def save(self, *args, **kwargs):
+        tipo_arquivo, _ = mimetypes.guess_type(self.file.name)
         if not self.id:
             self.name = self.file.name
-            self.file_size = self.file_size
+            self.file_size = self.file.size
+            if tipo_arquivo:
+                self.types = tipo_arquivo
+            else:
+                self.types = "tipo não localizado"
         super().save(*args, **kwargs)

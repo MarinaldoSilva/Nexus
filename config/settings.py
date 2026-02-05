@@ -14,9 +14,12 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     
-    'unfold',
-    'unfold.contrib.filters',
+    #'unfold',
+    #'unfold.contrib.filters',
     #'simpleui',
+    
+    'cloudinary_storage', 
+    'cloudinary',
     
     'core',
     'vault',
@@ -98,8 +101,11 @@ REST_AUTH = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 # --- ALLAUTH CONFIGURATION ---
@@ -124,35 +130,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# --- CONFIGURAÇÕES DO ALLAUTH ---
 
+# Diz ao Django que usamos o sistema de sites (obrigatório para allauth)
+SITE_ID = 1 
 
-# --- SIMPLEUI CONFIGURATION ---
+# Não exige verificação de email
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
 
-# # 1. Privacidade e Limpeza (Remove anúncios e tracking)
-# SIMPLEUI_HOME_INFO = False 
-# SIMPLEUI_ANALYSIS = False 
+# Permite logar com email? Sim.
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
+ACCOUNT_EMAIL_REQUIRED = True
 
-# # 2. Tema Padrão
-# # Opções: 'default', 'admin.lte.css', 'element.css', 'layui.css'
-# # Para um visual mais "Apple/Clean", o padrão ou element costumam ser melhores.
-# SIMPLEUI_DEFAULT_THEME = 'element.css' 
-
-# # 3. Menu e Ícones
-# SIMPLEUI_ICON = {
-#     'Acessos': 'fas fa-shield-alt',
-#     'Usuários': 'fas fa-user',
-#     'Grupos': 'fas fa-users-cog',
-# }
-
-# # 4. Logo e Títulos
-# SIMPLEUI_LOGO = 'https://www.djangoproject.com/m/img/logos/django-logo-negative.png' # Ou um caminho '/static/img/logo.png'
-# SIMPLEUI_HOME_TITLE = 'Dashboard Nexus'
-# SIMPLEUI_HOME_PAGE = '/admin/core/user/'
+# Evita que o allauth tente adivinhar usernames
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 
 #--- UNFOLD ADMIN CONFIGURATION ---
 UNFOLD = {
     "SITE_TITLE": "NEXUS Admin",
-    "SITE_HEADER": "Nexus Enterprise",
+    "SITE_HEADER": "Nexus Voult",
     "SITE_URL": "/",
     
     # 1. Configuração de Cores (Paleta Azul Enterprise)
@@ -191,13 +187,66 @@ UNFOLD = {
                         "icon": "lock",
                         "link": reverse_lazy("admin:auth_group_changelist"),
                     },
-                ],
+                ],            
             },
+            
+            {
+                "title": "Arquivos",
+                "separator" : True,
+                "items":[
+                    {
+                        "title": "Arquivos",
+                        "icon": "files",
+                        "link": reverse_lazy("admin:vault_file_changelist"),
+                    },
+                ]
+            }
         ],
     },
 }
 
 AUTH_USER_MODEL = "core.User"
+
+MEDIA_URL = '/files/' # Cloudinary usa /files/ ou URL completa
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files') # Fallback
+
+# --- CLOUDINARY CONFIGURATION ---
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'RESOURCE_TYPE': 'auto', # para acitar arquivos DOCX/PDF/MP4 até 100MB
+    # Timeout maior para arquivos grandes não travarem no meio
+    'CURL_OPTIONS': {
+        'timeout': 60, 
+    },
+    
+}
+
+# configuração Cloudiinary
+# STORAGES = {
+#     "default": {
+#         #cloudinary_storage.storage.MediaCloudinaryStorage /para usar midias
+#         #cloudinary_storage.storage.RawMediaCloudinaryStorage
+#         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+#     },
+#     "staticfiles": {
+#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#     },
+# }
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10737418240
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880 # 5 MB
 
 LANGUAGE_CODE = 'pt-br'
 
