@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     
-    "rest_framework",           # A API
+    "rest_framework",
     "rest_framework.authtoken", # Necessário para auth
     "dj_rest_auth",             # Endpoints de Login/Logout
     "allauth",                  # O cérebro do registro

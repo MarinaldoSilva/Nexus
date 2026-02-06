@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from vault.models import File
 from core.serializers import UserSerializer
-from vault.utils import compress_file_lzma
+from vault.services import compress_file_lzma
 
 
 class FileSerializer(serializers.ModelSerializer):

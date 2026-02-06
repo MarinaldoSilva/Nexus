@@ -1,7 +1,7 @@
 from django.db import models
 from uuid import uuid4
 import mimetypes
-from core.models import TimeStampeModel
+from core.models import TimestampedModel
 from django.conf import settings
 
 
@@ -15,7 +15,7 @@ def upload_path(instance, filename):
         user_id = "user_unknown"
     return f"uploads/{user_id}/{file_name}"
 
-class File(TimeStampeModel):
+class File(TimestampedModel):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

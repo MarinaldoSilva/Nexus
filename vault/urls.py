@@ -1,17 +1,10 @@
-from django.urls import path
-from vault.views import (
-    FileListAPIView, 
-    FileCreateAPIView, 
-    FileUpdateAPIView, 
-    FileDestroyAPIView,
-    CompressFileAPIView,
-)
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from vault.views import FileViewSet
+
+router = DefaultRouter()
+router.register(r'', FileViewSet, basename='file')
 
 urlpatterns = [
-    path('listar/', FileListAPIView.as_view(), name="meus_arquivos"),
-    path('criar/', FileCreateAPIView.as_view(), name="criar_arquivo"),
-    path('atualizar/<uuid:pk>/', FileUpdateAPIView.as_view(), name="atualizar_arquivo"),
-    path('deletar/<uuid:pk>/', FileDestroyAPIView.as_view(), name="deletar_arquivo"),
-    path('comprimir/', CompressFileAPIView.as_view(), name="comprimir_arquivo"),
-    
+    path('', include(router.urls)),
 ]

@@ -2,7 +2,7 @@ from django.db import models
 from uuid import uuid4
 
 
-class TimeStampeModel(models.Model):
+class TimestampedModel(models.Model):
     
     class Meta:
         abstract = True

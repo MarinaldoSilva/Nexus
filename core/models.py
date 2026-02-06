@@ -1,7 +1,7 @@
 from uuid import uuid4
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from core.abstract_models import TimeStampeModel
+from core.abstract_models import TimestampedModel
 
 
 class TypeChoicesUser(models.TextChoices):
@@ -10,7 +10,7 @@ class TypeChoicesUser(models.TextChoices):
         
 TYPE_USER_CHOICES = TypeChoicesUser.choices
 
-class User(AbstractUser, TimeStampeModel):
+class User(AbstractUser, TimestampedModel):
     
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
