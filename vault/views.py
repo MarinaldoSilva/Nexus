@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from vault.models import File
 from vault.serializers import FileSerializer
 from vault.permissions import IsAdmin
-from vault.services import compress_file_lzma
+from vault.services import compress_file
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -33,18 +33,18 @@ class FileViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='comprimir')
     def compress_standalone(self, request):
-        """
-        Endpoint utilitário para compressão avulsa (sem salvar no banco).
-        Acessível em: /api/files/comprimir/
-        """
         obj_file = request.FILES.get('file')
         if not obj_file:
             return Response({
                 "error": "Arquivo não enviado"
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        compressed = compress_file_lzma(obj_file)
+        tipo = request.data.get('compactar_tipo', 'MEDIO')
         
+        try:
+            compressed = compress_file(obj_file, zip_type=tipo)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)  
         response = HttpResponse(compressed, content_type='application/zip')
         response['Content-Disposition'] = f'attachment; filename="{compressed.name}"'
         response['Content-Length'] = compressed.size

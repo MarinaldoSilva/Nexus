@@ -36,10 +36,12 @@ class File(TimestampedModel):
         return self.name
     
     def save(self, *args, **kwargs):
-        tipo_arquivo, _ = mimetypes.guess_type(self.file.name)
-        if not self.id:
+        if not self.id and self.file:
             self.name = self.file.name
-            self.file_size = self.file.size
+            self.file_size = getattr(self.file, 'size', len(self.file.read()))
+            self.file.seek(0)
+            
+            tipo_arquivo, _ = mimetypes.guess_type(self.file.name)
             if tipo_arquivo:
                 self.types = tipo_arquivo
             else:
