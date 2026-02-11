@@ -1,9 +1,21 @@
 from rest_framework import serializers
-from vault.models import File
+from vault.models import File, Folder
 from core.serializers import UserSerializer
 from vault.services import compress_file
 import mimetypes
 
+
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = [
+            'id', 
+            'name', 
+            'parent', 
+            'created_at', 
+            'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'owner']
 
 class FileSerializer(serializers.ModelSerializer):
     
@@ -16,6 +28,7 @@ class FileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "owner_details",
+            "folder",
             "name",
             "file_size",
             "types",

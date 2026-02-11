@@ -23,8 +23,8 @@ INSTALLED_APPS = [
     
     'core',
     'vault',
+    'audit',
 
-    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'audit.middleware.AuditMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -91,6 +92,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    "DATETIME_FORMAT": "%d/%m/%Y %H:%M:%S", 
+    "DATE_FORMAT": "%d/%m/%Y",
 }
 
 REST_AUTH = {
@@ -109,11 +112,20 @@ SIMPLE_JWT = {
 }
 
 # --- ALLAUTH CONFIGURATION ---
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
-
+ACCOUNT_SIGNUP_FIELDS = [ 'email' ]
 ACCOUNT_LOGIN_METHODS = {'email'}
 
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# --- CONFIGURAÇÕES DO ALLAUTH ---
+# Diz ao Django que usamos o sistema de sites (obrigatório para allauth)
+
+SITE_ID = 1 
+# Não exige verificação de email
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
+# Permite logar com email? Sim.
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
+ACCOUNT_EMAIL_REQUIRED = True
+# Evita que o allauth tente adivinhar usernames
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -129,21 +141,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# --- CONFIGURAÇÕES DO ALLAUTH ---
-
-# Diz ao Django que usamos o sistema de sites (obrigatório para allauth)
-SITE_ID = 1 
-
-# Não exige verificação de email
-ACCOUNT_EMAIL_VERIFICATION = 'none' 
-
-# Permite logar com email? Sim.
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
-ACCOUNT_EMAIL_REQUIRED = True
-
-# Evita que o allauth tente adivinhar usernames
-ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 
 #--- UNFOLD ADMIN CONFIGURATION ---
 UNFOLD = {
@@ -249,10 +246,18 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10737418240
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880 # 5 MB
 
 LANGUAGE_CODE = 'pt-br'
+DATETIME_FORMAT = 'd/m/Y H:i:s'
+DATE_FORMAT = 'd/m/Y'
+
+DATETIME_INPUT_FORMATS = [
+    '%d/%m/%Y %H:%M:%S',
+    '%d/%m/%Y %H:%M',
+    '%d/%m/%Y',
+]
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_TZ = True
 

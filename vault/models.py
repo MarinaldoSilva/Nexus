@@ -15,12 +15,48 @@ def upload_path(instance, filename):
         user_id = "user_unknown"
     return f"uploads/{user_id}/{file_name}"
 
+
+class Folder(TimestampedModel):
+    
+    class Meta:
+        verbose_name = "Pasta"
+        verbose_name_plural="Pastas"
+        unique_together = ['parent', 'name', 'owner']
+    
+    name = models.CharField('Nome da pasta', max_length=255)
+    parent = models.ForeignKey(
+        'self',on_delete=models.CASCADE,
+        null=True,blank=True,
+        verbose_name="pasta pai",
+        related_name="subpastas"
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="folders"
+    )
+    
+    def __str__(self):
+        if self.parent:
+            return f"{self.parent.name}/{self.name}"
+        return self.name
+    
+
+
 class File(TimestampedModel):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="files",
         verbose_name="Dono"
+    )
+    folder = models.ForeignKey(
+        Folder,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="files",
+        verbose_name="Pasta"
     )
     file = models.FileField('arquivo', upload_to=upload_path)
     name = models.CharField('Nome do arquivo',max_length=255, null=True, blank=True, editable=False)

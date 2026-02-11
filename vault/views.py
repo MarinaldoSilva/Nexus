@@ -5,10 +5,21 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from vault.models import File
-from vault.serializers import FileSerializer
+from vault.models import File, Folder
+from vault.serializers import FileSerializer, FolderSerializer
 from vault.permissions import IsAdmin
 from vault.services import compress_file
+
+
+class FolderViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FolderSerializer
+    
+    def get_queryset(self):
+        return Folder.objects.filter(owner=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class FileViewSet(viewsets.ModelViewSet):
