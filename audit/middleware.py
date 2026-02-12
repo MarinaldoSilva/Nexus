@@ -2,8 +2,10 @@ from threading import local
 
 _threading_local = local()
 
+
 def get_current_request():
-    return getattr(_threading_local, 'request', None)
+    return getattr(_threading_local, "request", None)
+
 
 class AuditMiddleware:
     def __init__(self, get_response):

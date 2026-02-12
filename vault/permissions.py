@@ -1,6 +1,6 @@
 from rest_framework import permissions
+
 from core.models import TypeChoicesUser
-from vault.models import File
 
 
 class IsAdmin(permissions.BasePermission):
@@ -9,6 +9,4 @@ class IsAdmin(permissions.BasePermission):
             return False
         if request.user.is_staff:
             return True
-        return request.user.type_user in [
-            TypeChoicesUser.ADMIN
-        ]
+        return request.user.type_user in [TypeChoicesUser.ADMIN]

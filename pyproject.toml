@@ -33,6 +33,13 @@ dev = [
 line-length = 88 
 target-version = "py312"
 
+# Ignorar arquivos gerados automaticamente
+exclude = [
+    "*/migrations/*",
+    "scripts/test_integration.py",
+    "test_folder.py",
+]
+
 [tool.ruff.lint]
 # Habilitando regras estritas:
 # E = Erros pycodestyle
