@@ -60,9 +60,7 @@ class FileSerializer(serializers.ModelSerializer):
                     file=arquivo_original, zip_type=tipo_compactacao
                 )
             except ValueError as e:
-                raise serializers.ValidationError(
-                    {"compactar_tipo": str(e)}
-                ) from None
+                raise serializers.ValidationError({"compactar_tipo": str(e)}) from None
 
         arquivo_final = validated_data["file"]
         validated_data["name"] = arquivo_final.name
