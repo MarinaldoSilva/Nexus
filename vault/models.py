@@ -75,7 +75,7 @@ class File(TimestampedModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.name
+        return self.name or f"Arquivo #{self.pk}" if self.pk else "Novo arquivo"
 
     def save(self, *args, **kwargs):
         if not self.id and self.file:
