@@ -3,33 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Projeto Nexus</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            line-height: 1.6;
-            color: #222;
-        }
-        h1, h2, h3 {
-            margin-top: 28px;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        code {
-            font-family: Consolas, monospace;
-        }
-        ul {
-            margin-left: 20px;
-        }
-        a {
-            color: #0055aa;
-        }
-    </style>
 </head>
 <body>
 
