@@ -30,16 +30,24 @@ class SharedLinkViewSet(viewsets.ModelViewSet):
 
         if not obj.is_active:
             return Response({
-                "error":"Link para download não ativo."
+                "error": "Link para download não ativo."
             }, status=status.HTTP_400_BAD_REQUEST)
-        if obj and obj.expired < timezone.now():
+
+        if obj.expired < timezone.now():
             return Response({
-                "error":"Link para download expirado."
+                "error": "Link para download expirado."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         ip_user = request.META.get('REMOTE_ADDR')
-        browser_agent = request.headers.get('User-Agent','Desconhecido')
+        browser_agent = request.headers.get('User-Agent', 'Desconhecido')
         user_user_link_download = request.user if request.user.is_authenticated else None
+
+        arquivo = None
+
+        if obj.file:
+            arquivo = str(obj.file.uploaded_file.name)
+        elif obj.folder:
+            arquivo = str(obj.folder.name)
 
         Audit.objects.create(
             dono=user_user_link_download,
@@ -48,6 +56,18 @@ class SharedLinkViewSet(viewsets.ModelViewSet):
             ip_address=ip_user,
             cache_data={
                 "user_agent": browser_agent,
-                "arquivo_acessado_id": str(obj.file.uploaded_file.name) if obj.file else str(obj.folder.id)
+                "arquivo": arquivo
             }
         )
+
+        if obj.file:
+            return redirect(obj.file.uploaded_file.url)
+
+        elif obj.folder:
+            return Response({
+                "info": "O recurso de download de pastas inteiras está em produção, aguarde."
+            }, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+        return Response({
+            "error": "Este link de compartilhamento está corrompido ou não possui conteúdo."
+        }, status=status.HTTP_400_BAD_REQUEST)
