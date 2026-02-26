@@ -48,6 +48,6 @@ class SharedLinkViewSet(viewsets.ModelViewSet):
             ip_address=ip_user,
             cache_data={
                 "user_agent": browser_agent,
-                "arquivo_acessado_id": str(obj.file.file.id) if obj.file else str(obj.folder.id)
+                "arquivo_acessado_id": str(obj.file.uploaded_file.name) if obj.file else str(obj.folder.id)
             }
         )

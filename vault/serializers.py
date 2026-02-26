@@ -32,7 +32,7 @@ class FileSerializer(serializers.ModelSerializer):
             "file_type",
             "created_at",
             "updated_at",
-            "file",
+            "uploaded_file",
             "compactar",
             "compactar_tipo",
         ]
@@ -51,18 +51,18 @@ class FileSerializer(serializers.ModelSerializer):
         """
         compactar_arquivo = validated_data.pop("compactar", False)
         compactar_tipo = validated_data.pop("compactar_tipo", None)
-        arquivo_original = validated_data["file"]
+        arquivo_original = validated_data["uploaded_file"]
 
         if compactar_arquivo:
             tipo_compactacao = compactar_tipo or "MEDIO"
             try:
-                validated_data["file"] = compress_file(
+                validated_data["uploaded_file"] = compress_file(
                     file=arquivo_original, zip_type=tipo_compactacao
                 )
             except ValueError as e:
                 raise serializers.ValidationError({"compactar_tipo": str(e)}) from None
 
-        arquivo_final = validated_data["file"]
+        arquivo_final = validated_data["uploaded_file"]
         validated_data["name"] = arquivo_final.name
         validated_data["file_size"] = getattr(arquivo_final, "size", None) or len(
             arquivo_final.read()

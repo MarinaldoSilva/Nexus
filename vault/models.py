@@ -59,7 +59,7 @@ class File(TimestampedModel):
         related_name="files",
         verbose_name="Pasta",
     )
-    file = models.FileField("arquivo", upload_to=upload_path)
+    uploaded_file = models.FileField("arquivo", upload_to=upload_path)
     name = models.CharField(
         "Nome do arquivo", max_length=255, null=True, blank=True, editable=False
     )
@@ -79,12 +79,12 @@ class File(TimestampedModel):
         return self.name or f"Arquivo #{self.pk}" if self.pk else "Novo arquivo"
 
     def save(self, *args, **kwargs):
-        if not self.id and self.file:
-            self.name = self.file.name
-            self.file_size = getattr(self.file, "size", len(self.file.read()))
-            self.file.seek(0)
+        if not self.id and self.uploaded_file:
+            self.name = self.uploaded_file.name
+            self.file_size = getattr(self.uploaded_file, "size", len(self.uploaded_file.read()))
+            self.uploaded_file.seek(0)
 
-            tipo_arquivo, _ = mimetypes.guess_type(self.file.name)
+            tipo_arquivo, _ = mimetypes.guess_type(self.uploaded_file.name)
             if tipo_arquivo:
                 self.file_type = tipo_arquivo
             else:
