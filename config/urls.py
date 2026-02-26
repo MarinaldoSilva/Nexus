@@ -15,6 +15,7 @@ urlpatterns = [
     path("account/inactive/", AccountInactiveView.as_view(), name="account_inactive"),
     path("api/core/", include("core.urls")),
     path("api/files/", include("vault.urls")),
+    path('api/share/', include('share.urls')),
 ]
 
 if settings.DEBUG:

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "core",
     "vault",
     "audit",
+    "share",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -249,6 +250,9 @@ TIME_ZONE = "UTC"
 
 USE_I18N = False
 
+USE_TZ = True
+
+STATIC_URL = "static/"
 USE_TZ = True
 
 STATIC_URL = "static/"

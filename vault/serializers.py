@@ -29,7 +29,7 @@ class FileSerializer(serializers.ModelSerializer):
             "folder",
             "name",
             "file_size",
-            "types",
+            "file_type",
             "created_at",
             "updated_at",
             "file",
@@ -70,6 +70,6 @@ class FileSerializer(serializers.ModelSerializer):
         arquivo_final.seek(0)
 
         tipo_arquivo, _ = mimetypes.guess_type(arquivo_final.name)
-        validated_data["types"] = tipo_arquivo or "tipo não localizado"
+        validated_data["file_type"] = tipo_arquivo or "tipo não localizado"
 
         return super().create(validated_data)

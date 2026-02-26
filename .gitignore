@@ -1,5 +1,6 @@
 # Python-generated files
 __pycache__/
+files*/
 .ruff_cache
 *.py[oc]
 build/

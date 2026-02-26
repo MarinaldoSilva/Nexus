@@ -43,7 +43,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="comprimir")
     def compress_standalone(self, request):
-        obj_file = request.FILES.get("file")
+        obj_file = request.FILES.get("arquivo")
         if not obj_file:
             return Response(
                 {"error": "Arquivo não enviado"}, status=status.HTTP_400_BAD_REQUEST

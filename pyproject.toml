@@ -23,6 +23,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "django-types>=0.23.0",
     "pre-commit>=4.5.1",
     "ruff>=0.14.14",
 ]
@@ -30,7 +31,7 @@ dev = [
 # --- CONFIGURAÇÃO DE ENGENHARIA DO RUFF ---
 [tool.ruff]
 # Tamanho da linha (PEP8 diz 79, mas em 2026 usamos 88 ou 120 para telas HD)
-line-length = 88 
+line-length = 88
 target-version = "py312"
 
 # Ignorar arquivos gerados automaticamente
@@ -57,3 +58,7 @@ select = ["E", "F", "I", "B", "UP"]
 [tool.ruff.format]
 quote-style = "double" # Aspas duplas por padrão
 indent-style = "space"
+
+
+[tool.setuptools]
+packages = ["core", "audit", "files", "share", "vault", "config"]

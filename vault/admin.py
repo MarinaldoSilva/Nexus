@@ -5,15 +5,15 @@ from vault.models import File, Folder
 
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
-    list_display = ["name", "owner", "file_size", "types", "created_at"]
+    list_display = ["name", "owner", "file_size", "file_type", "created_at"]
 
-    search_fields = ["name", "owner", "types"]
+    search_fields = ["name", "owner", "file_type"]
 
     readonly_fields = [
         "owner",
         "name",
         "file_size",
-        "types",
+        "file_type",
         "created_at",
         "updated_at",
     ]

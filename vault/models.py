@@ -50,6 +50,7 @@ class File(TimestampedModel):
         related_name="files",
         verbose_name="Dono",
     )
+
     folder = models.ForeignKey(
         Folder,
         on_delete=models.CASCADE,
@@ -65,7 +66,7 @@ class File(TimestampedModel):
     file_size = models.PositiveIntegerField(
         "Bytes", null=True, blank=True, editable=False
     )
-    types = models.CharField(
+    file_type = models.CharField(
         "Type", max_length=50, null=True, blank=True, editable=False
     )
 
@@ -85,7 +86,7 @@ class File(TimestampedModel):
 
             tipo_arquivo, _ = mimetypes.guess_type(self.file.name)
             if tipo_arquivo:
-                self.types = tipo_arquivo
+                self.file_type = tipo_arquivo
             else:
-                self.types = "tipo não localizado"
+                self.file_type = "tipo não localizado"
         super().save(*args, **kwargs)
