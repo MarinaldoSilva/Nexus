@@ -104,9 +104,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# --- ALLAUTH CONFIGURATION ---
-ACCOUNT_SIGNUP_FIELDS = ["email"]
 ACCOUNT_LOGIN_METHODS = {"email"}
+SILENCED_SYSTEM_CHECKS = ["account.W001"]
 
 # --- CONFIGURAÇÕES DO ALLAUTH ---
 # Diz ao Django que usamos o sistema de sites (obrigatório para allauth)
@@ -114,9 +113,6 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 SITE_ID = 1
 # Não exige verificação de email
 ACCOUNT_EMAIL_VERIFICATION = "none"
-# Permite logar com email? Sim.
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
 # Evita que o allauth tente adivinhar usernames
 ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
 
