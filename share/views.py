@@ -1,14 +1,14 @@
-from rest_framework import viewsets
-from share.serializers import SharedLinkSerializer
-from share.models import SharedLink
-from audit.models import Audit
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.request import HttpRequest
 from django.shortcuts import redirect
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import HttpRequest
+from rest_framework.response import Response
+
+from audit.models import Audit
+from share.models import SharedLink
+from share.serializers import SharedLinkSerializer
 
 
 class SharedLinkViewSet(viewsets.ModelViewSet):
@@ -21,26 +21,32 @@ class SharedLinkViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
-    @action(detail=True, methods=['get'], permission_classes=[AllowAny])
+    @action(detail=True, methods=["get"], permission_classes=[AllowAny])
     def download(self, request: HttpRequest, pk):
         obj = SharedLink.objects.filter(link=pk).first()
 
         if not obj:
-            return Response({"error": "Link não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Link não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if not obj.is_active:
-            return Response({
-                "error": "Link para download não ativo."
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Link para download não ativo."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if obj.expired < timezone.now():
-            return Response({
-                "error": "Link para download expirado."
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Link para download expirado."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        ip_user = request.META.get('REMOTE_ADDR')
-        browser_agent = request.headers.get('User-Agent', 'Desconhecido')
-        user_user_link_download = request.user if request.user.is_authenticated else None
+        ip_user = request.META.get("REMOTE_ADDR")
+        browser_agent = request.headers.get("User-Agent", "Desconhecido")
+        user_user_link_download = (
+            request.user if request.user.is_authenticated else None
+        )
 
         arquivo = None
 
@@ -54,20 +60,29 @@ class SharedLinkViewSet(viewsets.ModelViewSet):
             action="DOWNLOAD",
             content_object=obj,
             ip_address=ip_user,
-            cache_data={
-                "user_agent": browser_agent,
-                "arquivo": arquivo
-            }
+            cache_data={"user_agent": browser_agent, "arquivo": arquivo},
         )
 
         if obj.file:
             return redirect(obj.file.uploaded_file.url)
 
         elif obj.folder:
-            return Response({
-                "info": "O recurso de download de pastas inteiras está em produção, aguarde."
-            }, status=status.HTTP_501_NOT_IMPLEMENTED)
+            return Response(
+                {
+                    "info": (
+                        "O recurso de download de pastas inteiras está em "
+                        "produção, aguarde."
+                    )
+                },
+                status=status.HTTP_501_NOT_IMPLEMENTED,
+            )
 
-        return Response({
-            "error": "Este link de compartilhamento está corrompido ou não possui conteúdo."
-        }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                "error": (
+                    "Este link de compartilhamento está corrompido ou não "
+                    "possui conteúdo."
+                )
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
