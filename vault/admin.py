@@ -18,6 +18,11 @@ class FileAdmin(admin.ModelAdmin):
         "updated_at",
     ]
 
+    def save_model(self, request, obj, form, change):
+        if not obj.owner_id:
+            obj.owner = request.user
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Folder)
 class FolderAdmin(admin.ModelAdmin):
@@ -28,3 +33,8 @@ class FolderAdmin(admin.ModelAdmin):
     list_filter = ["created_at"]
 
     readonly_fields = ["owner", "created_at", "updated_at"]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.owner_id:
+            obj.owner = request.user
+        super().save_model(request, obj, form, change)
